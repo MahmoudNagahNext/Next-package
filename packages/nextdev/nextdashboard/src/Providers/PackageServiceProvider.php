@@ -1,6 +1,6 @@
 <?php
 
-namespace nextdev\nextdashboard;
+namespace nextdev\nextdashboard\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
