@@ -121,6 +121,32 @@ trait ApiResponseTrait
         return $this->successResponse($data, $message, Response::HTTP_OK, $meta);
     }
 
+    public function paginatedCollectionResponse(AbstractPaginator $paginator, string $message = '', array $additionalMeta = [],?string $resourceClass = null): JsonResponse {
+        // Apply resource transformation if a resource class is provided
+        $data = $resourceClass
+            ? $resourceClass::collection($paginator->items())
+            : $paginator->items();
+    
+        // Build meta
+        $meta = [
+            'pagination' => [
+                'total' => $paginator->total(),
+                'per_page' => $paginator->perPage(),
+                'current_page' => $paginator->currentPage(),
+                'last_page' => $paginator->lastPage(),
+                'from' => $paginator->firstItem(),
+                'to' => $paginator->lastItem(),
+            ]
+        ];
+    
+        // Merge additional meta if provided
+        if (!empty($additionalMeta)) {
+            $meta = array_merge($meta, $additionalMeta);
+        }
+    
+        return $this->successResponse($data, $message, Response::HTTP_OK, $meta);
+    }
+
     /**
      * ===================================================
      * Error Responses

@@ -9,10 +9,10 @@ class PackageServiceProvider extends ServiceProvider
     public function boot()
     {
         // Load routes
-        $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
+        $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
 
         // Load migrations
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
         // Publish config
         $this->publishes([
@@ -21,13 +21,13 @@ class PackageServiceProvider extends ServiceProvider
 
         // Publish migrations
         $this->publishes([
-            __DIR__.'/../database/migrations' => database_path('migrations'),
+            __DIR__.'/../../database/migrations' => database_path('migrations'),
         ], 'nextdashboard-migrations');
     }
 
     public function register()
     {
-        // // Merge package config
+        // Merge package config
         // $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'laravelusermanager');
     }
 }

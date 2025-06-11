@@ -3,9 +3,11 @@
 namespace nextdev\nextdashboard\Http\Controllers;
 
 use Illuminate\Routing\Controller;
+use nextdev\nextdashboard\DTOs\AdminDTO;
 use nextdev\nextdashboard\Traits\ApiResponseTrait;
 use nextdev\nextdashboard\Http\Requests\Auth\LoginRequest;
 use nextdev\nextdashboard\Http\Requests\Auth\RegisterRequest;
+use nextdev\nextdashboard\Http\Resources\AdminResource;
 use nextdev\nextdashboard\Services\AuthService;
 
 class AuthController extends Controller
@@ -19,11 +21,11 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         try {
-            $data = $this->authService->login($request->validated());
+            $admin = $this->authService->login($request->validated());
 
             return $this->successResponse([
-                'user' => $data['user'],
-                'token' => $data['token'],
+                'admin' => AdminResource::make($admin),
+                'token' => $admin['api_token'],
                 'token_type' => 'Bearer'
             ], 'Login successful');
         } catch (\Exception $e) {
@@ -34,11 +36,12 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         try {
-            $res = $this->authService->register($request->validated());
+            $adminDTO = AdminDTO::fromRequest($request->validated());
+            $admin = $this->authService->register($adminDTO);
 
             return $this->createdResponse([
-                'user' => $res['user'],
-                'token' => $res['token'],
+                'user' => AdminResource::make($admin),
+                'token' => $admin['api_token'],
                 'token_type' => 'Bearer'
             ], 'User Created Successfully');
         } catch (\Exception $e) {

@@ -1,13 +1,13 @@
 <?php
 
-namespace nextdev\nextdashboard\Http\Requests\Auth;
+namespace nextdev\nextdashboard\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * @bodyParam img file optional The user image to upload. Example: avatar.jpg
  */
-class LoginRequest extends FormRequest
+class AdminUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,10 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email'      => ['required', 'email', 'exists:admins,email'],
-            'password'   => ['required'],
+            'name'       => 'required|string|max:255|min:3',
+            'status'     => 'integer|in:0,1'
+            // 'email'      => 'required|email|unique:admins,email',
+            // 'password'   => 'required|min:6|confirmed',
         ];
     }
 }
