@@ -15,8 +15,19 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->string('status')->default('open');
-            $table->string('priority')->default('open');
+            
+            $table->foreignId('status_id')
+                ->constrained('ticket_statuses')
+                ->onDelete('cascade');
+            
+            $table->foreignId('priority_id')
+                ->constrained('ticket_priorities')
+                ->onDelete('cascade');
+
+            $table->foreignId('category_id')
+                ->constrained('ticket_categories')
+                ->onDelete('cascade');
+
             $table->morphs('creatore');
             $table->morphs('assignee');
             $table->timestamps();

@@ -9,7 +9,7 @@ class PackageServiceProvider extends ServiceProvider
     public function boot()
     {
         // Load routes
-        $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
+        $this->loadRoutesFrom(__DIR__.'/../../routes/dashboard.php');
 
         // Load migrations
         $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');

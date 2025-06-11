@@ -13,10 +13,12 @@ class AuthService
      public function login(array $credentials)
      {
           $admin = Admin::where('email', $credentials['email'])->first();
-          if (!$admin || !Auth::guard('admin')->attempt($credentials)) {
-            throw new \Exception("Invalid credentials");
+          
+          // Verify password directly instead of using attempt
+          if (!$admin || !Hash::check($credentials['password'], $admin->password)) {
+              throw new \Exception("Invalid credentials");
           }
-     
+
           // Generate token manually
           $token = hash('sha256', Str::random(60));
 
