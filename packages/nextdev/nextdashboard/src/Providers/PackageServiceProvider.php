@@ -19,10 +19,15 @@ class PackageServiceProvider extends ServiceProvider
             __DIR__.'/../config/config.php' => config_path('config.php'),
         ]);
 
-        // Publish migrations
+        // Publish migrations: php artisan vendor:publish --tag=nextdashboard-migrations
         $this->publishes([
             __DIR__.'/../../database/migrations' => database_path('migrations'),
         ], 'nextdashboard-migrations');
+
+        // Publish seeders: php artisan vendor:publish --tag=nextdashboard-seeders
+        $this->publishes([
+            __DIR__.'/../../database/seeders' => database_path('seeders'),
+        ], 'nextdashboard-seeders');
     }
 
     public function register()

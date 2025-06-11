@@ -5,7 +5,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "nextdev\\nextdashboard\\": "src/"
+            "nextdev\\nextdashboard\\": "src/",
+            "Database\\": "database/"
         }
     },
     "authors": [
