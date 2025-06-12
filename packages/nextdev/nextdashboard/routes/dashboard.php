@@ -9,9 +9,12 @@ use nextdev\nextdashboard\Http\Controllers\TicketController;
 
 Route::group(["prefix"=> "dashboard"], function () {
     
-    Route::prefix('auth')->group(function () {
-        Route::post('login', [AuthController::class, 'login']);
-        Route::post('register', [AuthController::class, 'register']);
+    Route::group(['prefix' => 'auth', 'controller' => AuthController::class],function () {
+        Route::post('login', 'login');
+        Route::post('register', 'register');
+
+        Route::post('/forgot-password', 'sendResetLinkEmail');
+        Route::post('/reset-password', 'reset');
     });
 
     Route::group(['middleware' => 'auth:admin'], function () {
