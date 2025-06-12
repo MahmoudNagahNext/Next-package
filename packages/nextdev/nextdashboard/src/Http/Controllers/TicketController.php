@@ -2,13 +2,11 @@
 
 namespace nextdev\nextdashboard\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use nextdev\nextdashboard\DTOs\AdminDTO;
+use nextdev\nextdashboard\DTOs\TicketDTO;
 use nextdev\nextdashboard\Traits\ApiResponseTrait;
 use nextdev\nextdashboard\Http\Requests\Ticket\TicketStoreRequest;
 use nextdev\nextdashboard\Http\Requests\Ticket\TicketUpdateRequest;
-use nextdev\nextdashboard\Http\Resources\AdminResource;
 use nextdev\nextdashboard\Http\Resources\TicketResource;
 use nextdev\nextdashboard\Services\TicketService;
 
@@ -29,7 +27,8 @@ class TicketController extends Controller
     public function store(TicketStoreRequest $request)
     {
         try{
-            $ticket = $this->ticketService->create($request->all());
+            $dto = TicketDTO::fromRequest($request->validated());
+            $ticket = $this->ticketService->create($dto);
             return $this->createdResponse(TicketResource::make($ticket));
         } catch(\Exception $e){
             return $this->handleException($e);

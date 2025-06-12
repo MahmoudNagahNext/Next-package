@@ -3,9 +3,7 @@
 namespace nextdev\nextdashboard\Services;
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
-use nextdev\nextdashboard\DTOs\AdminDTO;
+use nextdev\nextdashboard\DTOs\TicketDTO;
 use nextdev\nextdashboard\Models\Admin;
 use nextdev\nextdashboard\Models\Ticket;
 
@@ -21,9 +19,10 @@ class TicketService
         return $this->model::query()->with($with)->paginate(10);
     }
  
-    public function create(array $data)
+    public function create(TicketDTO $dto)
     {   
-        $data["creator_id"] = Auth::user()->id;
+        $data = (array) $dto;
+        $data['creator_id'] = Auth::user()->id;
         $data['creator_type'] = Admin::class;
 
         return $this->model::create($data);
