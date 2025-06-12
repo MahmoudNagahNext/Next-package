@@ -17,19 +17,22 @@ return new class extends Migration
             $table->text('description');
             
             $table->foreignId('status_id')
+                ->nullable()
                 ->constrained('ticket_statuses')
                 ->onDelete('cascade');
             
             $table->foreignId('priority_id')
+                ->nullable()
                 ->constrained('ticket_priorities')
                 ->onDelete('cascade');
 
             $table->foreignId('category_id')
+                ->nullable()
                 ->constrained('ticket_categories')
                 ->onDelete('cascade');
 
-            $table->morphs('creatore');
-            $table->morphs('assignee');
+            $table->morphs('creator');
+            $table->nullableMorphs('assignee');
             $table->timestamps();
         });
     }

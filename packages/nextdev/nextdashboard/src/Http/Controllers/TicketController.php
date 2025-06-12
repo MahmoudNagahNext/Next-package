@@ -9,6 +9,7 @@ use nextdev\nextdashboard\Traits\ApiResponseTrait;
 use nextdev\nextdashboard\Http\Requests\Ticket\TicketStoreRequest;
 use nextdev\nextdashboard\Http\Requests\Ticket\TicketUpdateRequest;
 use nextdev\nextdashboard\Http\Resources\AdminResource;
+use nextdev\nextdashboard\Http\Resources\TicketResource;
 use nextdev\nextdashboard\Services\TicketService;
 
 class TicketController extends Controller
@@ -19,44 +20,44 @@ class TicketController extends Controller
         protected TicketService $ticketService
     ){}
 
-    // public function index()
-    // {
-    //     $admins = $this->adminService->paginate();
-    //     return $this->paginatedCollectionResponse($admins,'Admins Paginated', [], AdminResource::class);
-    // }
+    public function index()
+    {
+        $tickets = $this->ticketService->paginate(['creator','assignee','status','priority','category']);
+        return $this->paginatedCollectionResponse($tickets,'Tickets Paginated', [], TicketResource::class);
+    }
 
-    public function store(Request $request)
+    public function store(TicketStoreRequest $request)
     {
         try{
-            $admin = $this->ticketService->create($request->all());
-            return $this->createdResponse(AdminResource::make($admin));
+            $ticket = $this->ticketService->create($request->all());
+            return $this->createdResponse(TicketResource::make($ticket));
         } catch(\Exception $e){
             return $this->handleException($e);
         }
     }
 
-    // public function show(int $id)
-    // {
-    //     return $this->successResponse(AdminResource::make($this->adminService->find($id)));
-    // }
+    public function show(int $id)
+    {
+        return $this->successResponse(TicketResource::make($this->ticketService->find($id,['creator','assignee','status','priority','category'])));
+    }
 
-    // public function update(AdminUpdateRequest $request,int $id)
-    // {
-    //     try{
-    //         $this->adminService->update($request->validated(), $id);
-    //         return $this->updatedResponse();
-    //     } catch(\Exception $e){
-    //         return $this->handleException($e);
-    //     }
-    // }
+    public function update(TicketUpdateRequest $request,int $id)
+    {
+        try{
+            $this->ticketService->update($request->validated(), $id);
+            return $this->updatedResponse();
+        } catch(\Exception $e){
+            return $this->handleException($e);
+        }
+    }
 
-    // public function destroy(int $id)
-    // {
-    //     try{
-    //         $this->adminService->delete($id);
-    //         return $this->deletedResponse();
-    //     } catch(\Exception $e){
-    //         return $this->handleException($e);
-    //     }
-    // }
+    public function destroy(int $id)
+    {
+        try{
+            $this->ticketService->delete($id);
+            return $this->deletedResponse();
+        } catch(\Exception $e){
+            return $this->handleException($e);
+        }
+    }
 }

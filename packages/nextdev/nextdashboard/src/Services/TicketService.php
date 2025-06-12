@@ -7,34 +7,45 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use nextdev\nextdashboard\DTOs\AdminDTO;
 use nextdev\nextdashboard\Models\Admin;
+use nextdev\nextdashboard\Models\Ticket;
 
 class TicketService
 {
-    // public function paginate()
-    // {
-    //     return Admin::query()->paginate(10);
-    // }
+
+    public function __construct(
+        protected Ticket $model,
+    ){}
+
+    public function paginate(array $with)
+    {
+        return $this->model::query()->with($with)->paginate(10);
+    }
  
     public function create(array $data)
-    { 
-        dd(Auth::id());
-        // return Admin::create($data);
+    {   
+        $data["creator_id"] = Auth::user()->id;
+        $data['creator_type'] = Admin::class;
+
+        return $this->model::create($data);
     }
 
-    //  public function find(int $id)
-    //  {
-    //      return Admin::query()->find($id);
-    //  }
+     public function find(int $id,array $with = [])
+     {
+         return $this->model::query()->with($with)->find($id);
+     }
  
-    //  public function update(array $data, $id)
-    //  {
-    //      $user = Admin::query()->find($id);
-    //      return $user->update($data);
-    //  }
+     public function update(array $data, $id)
+     {
+        $ticket = $this->model->find($id);
+        if($data['assignee_id']){
+            $data['assignee_type'] = Admin::class;
+        }
+        return $ticket->update($data);
+     }
  
-    //  public function delete(int $id)
-    //  {
-    //      $user = Admin::query()->find($id);
-    //      return $user->delete();
-    //  }
+     public function delete(int $id)
+     {
+         $ticket = $this->model::query()->find($id);
+         return $ticket->delete();
+     }
 }

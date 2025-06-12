@@ -10,34 +10,38 @@ use nextdev\nextdashboard\Models\Admin;
 
 class AdminService
 {
-     public function paginate()
-     {
-         return Admin::query()->paginate(10);
-     }
- 
-     public function create(AdminDTO $dto)
-     { 
-         return Admin::create([
-          'name'=> $dto->name,
-          'email'=> $dto->email,
-          'password'=> Hash::make($dto->password),
-         ]);
-     }
+    public function __construct(
+        private Admin $model,
+    ){}
 
-     public function find(int $id)
-     {
-         return Admin::query()->find($id);
-     }
+    public function paginate()
+    {
+        return $this->model::query()->paginate(10);
+    }
  
-     public function update(array $data, $id)
-     {
-         $user = Admin::query()->find($id);
-         return $user->update($data);
-     }
+    public function create(AdminDTO $dto)
+    { 
+        return $this->model::create([
+            'name'=> $dto->name,
+            'email'=> $dto->email,
+            'password'=> Hash::make($dto->password),
+        ]);
+    }
+
+    public function find(int $id)
+    {
+        return $this->model::query()->find($id);
+    }
  
-     public function delete(int $id)
-     {
-         $user = Admin::query()->find($id);
-         return $user->delete();
-     }
+    public function update(array $data, $id)
+    {
+        $user = $this->model::query()->find($id);
+        return $user->update($data);
+    }
+ 
+    public function delete(int $id)
+    {
+        $user = $this->model::query()->find($id);
+        return $user->delete();
+    }
 }

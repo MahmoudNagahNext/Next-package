@@ -21,4 +21,14 @@ class Admin extends Authenticatable
     protected $hidden = [
         'password',
     ];
+
+    public function createdTickets()
+    {
+        return $this->morphMany(Ticket::class,'creator_type');
+    }
+
+    public function assigneeTickets()
+    {
+        return $this->morphMany(Ticket::class,'assignee_type');
+    }
 }
