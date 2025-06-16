@@ -2,6 +2,7 @@
 
 namespace nextdev\nextdashboard\Http\Controllers;
 
+use App\Notifications\AdminResetPasswordNotification;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -15,6 +16,7 @@ use nextdev\nextdashboard\Http\Requests\Auth\RegisterRequest;
 use nextdev\nextdashboard\Http\Requests\Auth\ResetPasswordRequest;
 use nextdev\nextdashboard\Http\Requests\Auth\SendResetLinkEmailRequest;
 use nextdev\nextdashboard\Http\Resources\AdminResource;
+use nextdev\nextdashboard\Models\Admin;
 use nextdev\nextdashboard\Services\AuthService;
 
 class AuthController extends Controller
@@ -58,12 +60,30 @@ class AuthController extends Controller
 
     public function sendResetLinkEmail(SendResetLinkEmailRequest $request)
     {
-        $status = Password::broker('admins')->sendResetLink($request->validated());
+        $admin = Admin::where('email', $request->email)->first();
 
-        return $status === Password::RESET_LINK_SENT
-            ? response()->json(['message' => __($status)])
-            : response()->json(['error' => __($status)], 400);
+        if (!$admin) {
+            return response()->json(['error' => 'Email not found'], 404);
+        }
+
+        $token = Password::broker('admins')->createToken($admin);
+        
+        $admin->notify(new AdminResetPasswordNotification($token));
+
+        return response()->json([
+            'message' => 'Reset token sent to your email address.'
+        ]);
     }
+
+    //  public function sendResetLinkEmail(SendResetLinkEmailRequest $request)
+    // {
+    //     $status = Password::broker('admins')->sendResetLink($request->validated());
+
+    //     return $status === Password::RESET_LINK_SENT
+    //         ? response()->json(['message' => __($status)])
+    //         : response()->json(['error' => __($status)], 400);
+    // }
+
 
     public function reset(ResetPasswordRequest $request)
     {
